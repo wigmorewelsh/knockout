@@ -36,9 +36,12 @@ ko.dependentObservable = function (evaluatorFunctionOrOptions, evaluatorFunction
 
     function evaluatePossiblyAsync() {
         var throttleEvaluationTimeout = dependentObservable['throttleEvaluation'];
+        var evaluationCallback = dependentObservable['evaluationCallback'];
         if (throttleEvaluationTimeout && throttleEvaluationTimeout >= 0) {
             clearTimeout(evaluationTimeoutInstance);
             evaluationTimeoutInstance = setTimeout(evaluateImmediate, throttleEvaluationTimeout);
+        } else if (evaluationCallback) {
+            evaluationCallback(evaluateImmediate);
         } else if (dependentObservable._evalRateLimited) {
             dependentObservable._evalRateLimited();
         } else {
